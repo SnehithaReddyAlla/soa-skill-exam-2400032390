@@ -175,3 +175,118 @@ Caused by: java.io.IOException: The pipe is being closed
 
 !ENTRY org.springframework.tooling.boot.ls 1 0 2026-11-07 07:40:19.813
 !MESSAGE DelegatingStreamConnectionProvider - Stopping Boot LS
+!SESSION 2026-11-07 08:51:56.820 -----------------------------------------------
+eclipse.buildId=4.40.0.20260604-0652
+java.version=21.0.9
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Framework arguments:  -javaagent:lombok.jar -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -javaagent:lombok.jar -product org.eclipse.epp.package.jee.product
+
+!ENTRY ch.qos.logback.classic 1 0 2026-11-07 08:52:12.011
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-11-07 08:52:25.761
+!MESSAGE Logback config file: D:\3-1\SOA\SKILLEXAMWORKSPACE\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.101.20251017-1242.xml
+
+!ENTRY org.eclipse.ui 2 0 2026-11-07 08:52:27.662
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-11-07 08:52:27.662
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.ui 2 0 2026-11-07 08:52:29.152
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-11-07 08:52:29.152
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-11-07 08:52:57.736
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\Hp'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.egit.core 4 0 2026-11-07 08:52:57.901
+!MESSAGE Remove repository mapping of Git mapped resource for which project or mapped git repository has disappeared: 'RepositoryMapping[<empty> -> '.git', absolute path: 'D:/3-1/SOA/SKILLEXAMWORKSPACE/task-service/.git' ]'
+!STACK 0
+java.io.FileNotFoundException: 
+	at org.eclipse.egit.core.project.GitProjectData.logAndUnmapGoneMappedResource(GitProjectData.java:751)
+	at org.eclipse.egit.core.project.GitProjectData.map(GitProjectData.java:714)
+	at org.eclipse.egit.core.project.GitProjectData.remapAll(GitProjectData.java:678)
+	at org.eclipse.egit.core.project.GitProjectData.load(GitProjectData.java:661)
+	at org.eclipse.egit.core.project.GitProjectData.get(GitProjectData.java:217)
+	at org.eclipse.egit.core.project.RepositoryMapping.getProjectData(RepositoryMapping.java:335)
+	at org.eclipse.egit.core.project.RepositoryMapping.findMapping(RepositoryMapping.java:356)
+	at org.eclipse.egit.core.project.RepositoryMapping.getMapping(RepositoryMapping.java:296)
+	at org.eclipse.egit.core.internal.util.ResourceUtil.getRepository(ResourceUtil.java:708)
+	at org.eclipse.egit.core.internal.info.GitItemStateFactory.getIndexDiffDataOrNull(GitItemStateFactory.java:106)
+	at org.eclipse.egit.ui.internal.decorators.GitLightweightDecorator.decorateResource(GitLightweightDecorator.java:194)
+	at org.eclipse.egit.ui.internal.decorators.GitLightweightDecorator.decorate(GitLightweightDecorator.java:172)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorDefinition.decorate(LightweightDecoratorDefinition.java:250)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager$LightweightRunnable.run(LightweightDecoratorManager.java:105)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager.decorate(LightweightDecoratorManager.java:359)
+	at org.eclipse.ui.internal.decorators.LightweightDecoratorManager.getDecorations(LightweightDecoratorManager.java:345)
+	at org.eclipse.ui.internal.decorators.DecorationScheduler$1.queue(DecorationScheduler.java:410)
+	at org.eclipse.ui.internal.decorators.DecorationScheduler$1.run(DecorationScheduler.java:388)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.jface 2 0 2026-11-07 08:53:11.382
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2026-11-07 08:53:11.383
+!MESSAGE A conflict occurred for CTRL+SHIFT+T:
+Binding(CTRL+SHIFT+T,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.navigate.open.type,Open Type,
+		Open a type in a Java editor,
+		Category(org.eclipse.ui.category.navigate,Navigate,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.jdt.ui.navigate.open.type"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(CTRL+SHIFT+T,
+	ParameterizedCommand(Command(org.eclipse.lsp4e.symbolInWorkspace,Go to Symbol in Workspace,
+		,
+		Category(org.eclipse.lsp4e.category,Language Servers,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.lsp4e.symbolInWorkspace"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:25.359
+!MESSAGE Plugin is modifying compileSourceRoots through clear(), which will not work in Maven 4.0.0. Use MavenProject.addCompileSourceRoot()/removeCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:25.362
+!MESSAGE Plugin is modifying compileSourceRoots through add(), which will not work in Maven 4.0.0. Use MavenProject.addCompileSourceRoot()/removeCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:25.363
+!MESSAGE Plugin is modifying testCompileSourceRoots through clear(), which will not work in Maven 4.0.0. Use MavenProject.addTestCompileSourceRoot()/removeTestCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:25.364
+!MESSAGE Plugin is modifying testCompileSourceRoots through add(), which will not work in Maven 4.0.0. Use MavenProject.addTestCompileSourceRoot()/removeTestCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:49.922
+!MESSAGE Plugin is modifying compileSourceRoots through clear(), which will not work in Maven 4.0.0. Use MavenProject.addCompileSourceRoot()/removeCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:49.933
+!MESSAGE Plugin is modifying compileSourceRoots through add(), which will not work in Maven 4.0.0. Use MavenProject.addCompileSourceRoot()/removeCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:49.936
+!MESSAGE Plugin is modifying testCompileSourceRoots through clear(), which will not work in Maven 4.0.0. Use MavenProject.addTestCompileSourceRoot()/removeTestCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:53:49.938
+!MESSAGE Plugin is modifying testCompileSourceRoots through add(), which will not work in Maven 4.0.0. Use MavenProject.addTestCompileSourceRoot()/removeTestCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:55:31.598
+!MESSAGE Plugin is modifying compileSourceRoots through clear(), which will not work in Maven 4.0.0. Use MavenProject.addCompileSourceRoot()/removeCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:55:31.600
+!MESSAGE Plugin is modifying compileSourceRoots through add(), which will not work in Maven 4.0.0. Use MavenProject.addCompileSourceRoot()/removeCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:55:31.601
+!MESSAGE Plugin is modifying testCompileSourceRoots through clear(), which will not work in Maven 4.0.0. Use MavenProject.addTestCompileSourceRoot()/removeTestCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2026-11-07 08:55:31.604
+!MESSAGE Plugin is modifying testCompileSourceRoots through add(), which will not work in Maven 4.0.0. Use MavenProject.addTestCompileSourceRoot()/removeTestCompileSourceRoot() methods instead. If using a plugin, please upgrade to the latest version or report the issue to the plugin maintainer. To disable these warnings, set -Dmaven.project.sourceRoots.warningsDisabled=true on the command line, in the .mvn/maven.config file, or in project POM properties.
+
+!ENTRY org.springframework.tooling.boot.ls 1 0 2026-11-07 08:55:37.298
+!MESSAGE DelegatingStreamConnectionProvider - Stopping Boot LS

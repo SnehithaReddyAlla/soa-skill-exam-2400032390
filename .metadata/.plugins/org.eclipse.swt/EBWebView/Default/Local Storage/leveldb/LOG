@@ -1,2 +1,3 @@
-2026/11/07-07:34:13.136 105db4 Creating DB D:\3-1\SOA\SKILLEXAMWORKSPACE\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb since it was missing.
-2026/11/07-07:34:13.183 105db4 Reusing MANIFEST D:\3-1\SOA\SKILLEXAMWORKSPACE\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2026/11/07-08:53:30.037 113698 Reusing MANIFEST D:\3-1\SOA\SKILLEXAMWORKSPACE\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2026/11/07-08:53:30.043 113698 Recovering log #3
+2026/11/07-08:53:30.053 113698 Reusing old log D:\3-1\SOA\SKILLEXAMWORKSPACE\.metadata\.plugins\org.eclipse.swt\EBWebView\Default\Local Storage\leveldb/000003.log 
