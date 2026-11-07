@@ -1,0 +1,182 @@
+
+package com.klef.soa.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+
+import com.klef.soa.entity.Task;
+import com.klef.soa.repository.TaskRepository;
+
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class TaskRepositoryTest
+{
+    @Autowired
+    private TaskRepository repository;
+
+    @Test
+    void testFindAllTasks()
+    {
+        Task task = Task.builder()
+                .name("Repository Test Task")
+                .type("Testing")
+                .status("Pending")
+                .location("Vijayawada")
+                .build();
+
+        repository.save(task);
+
+        List<Task> tasks = repository.findAll();
+
+        assertNotNull(tasks);
+        assertFalse(tasks.isEmpty());
+
+        System.out.println("Total Tasks: " + tasks.size());
+    }
+
+    @Test
+    void testFindTaskById()
+    {
+        Task task = Task.builder()
+                .name("Find By ID Task")
+                .type("Testing")
+                .status("Pending")
+                .location("Vijayawada")
+                .build();
+
+        Task savedTask = repository.save(task);
+
+        Optional<Task> foundTask =
+                repository.findById(savedTask.getId());
+
+        assertTrue(foundTask.isPresent());
+        assertEquals(savedTask.getId(), foundTask.get().getId());
+
+        System.out.println("Task ID: " + foundTask.get().getId());
+        System.out.println("Task Name: " + foundTask.get().getName());
+    }
+
+    @Test
+    void testFindTaskByName()
+    {
+        Task task = Task.builder()
+                .name("Java Development")
+                .type("Development")
+                .status("Pending")
+                .location("Vijayawada")
+                .build();
+
+        repository.save(task);
+
+        List<Task> tasks =
+                repository.findByName("Java Development");
+
+        assertNotNull(tasks);
+        assertFalse(tasks.isEmpty());
+        assertEquals("Java Development", tasks.get(0).getName());
+
+        System.out.println("Task Name: " + tasks.get(0).getName());
+    }
+
+    @Test
+    void testFindTaskByInvalidName()
+    {
+        List<Task> tasks =
+                repository.findByName("Invalid Task Name");
+
+        assertNotNull(tasks);
+        assertTrue(tasks.isEmpty());
+
+        System.out.println("Invalid Task Search: No Records Found");
+    }
+
+    @Test
+    void testFindTaskByType()
+    {
+        Task task = Task.builder()
+                .name("Development Task")
+                .type("Development")
+                .status("Completed")
+                .location("Hyderabad")
+                .build();
+
+        repository.save(task);
+
+        List<Task> tasks =
+                repository.findByType("Development");
+
+        assertNotNull(tasks);
+        assertFalse(tasks.isEmpty());
+
+        System.out.println("Tasks Found By Type: " + tasks.size());
+    }
+
+    @Test
+    void testDatabaseConnection()
+    {
+        long count = repository.count();
+
+        assertTrue(count >= 0);
+
+        System.out.println("Total Tasks in Database: " + count);
+    }
+
+    @Test
+    void testTaskDetails()
+    {
+        Task task = Task.builder()
+                .name("Task Details Test")
+                .type("Testing")
+                .status("Pending")
+                .location("Vijayawada")
+                .build();
+
+        Task savedTask = repository.save(task);
+
+        Optional<Task> foundTask =
+                repository.findById(savedTask.getId());
+
+        assertTrue(foundTask.isPresent());
+
+        Task found = foundTask.get();
+
+        assertNotNull(found.getName());
+        assertNotNull(found.getType());
+        assertNotNull(found.getStatus());
+        assertNotNull(found.getLocation());
+
+        System.out.println("Name: " + found.getName());
+        System.out.println("Type: " + found.getType());
+        System.out.println("Status: " + found.getStatus());
+        System.out.println("Location: " + found.getLocation());
+    }
+
+    @Test
+    void testTotalTaskCount()
+    {
+        Task task = Task.builder()
+                .name("Count Test Task")
+                .type("Testing")
+                .status("Pending")
+                .location("Vijayawada")
+                .build();
+
+        repository.save(task);
+
+        long count = repository.count();
+
+        assertTrue(count >= 1);
+
+        System.out.println("Total Task Count: " + count);
+    }
+}

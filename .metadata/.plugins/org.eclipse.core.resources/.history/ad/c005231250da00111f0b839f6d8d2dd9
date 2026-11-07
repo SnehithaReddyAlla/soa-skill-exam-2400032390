@@ -1,0 +1,657 @@
+
+package com.klef.soa.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class TaskServiceIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+
+    // =========================================================
+    // COMMON METHOD
+    // CREATE TASK REQUEST
+    // =========================================================
+
+    private String getTaskRequest(
+            String name,
+            String type,
+            String status,
+            String location) throws Exception {
+
+        return "{"
+                + "\"name\":\"" + name + "\","
+                + "\"type\":\"" + type + "\","
+                + "\"status\":\"" + status + "\","
+                + "\"location\":\"" + location + "\""
+                + "}";
+    }
+
+
+    // =========================================================
+    // TEST CASE 1
+    // VALID WORKFLOW
+    //
+    // Login -> JWT -> Protected API -> Success
+    //
+    // Expected to fail because JWT is not configured.
+    // =========================================================
+
+    @Test
+    void testValidWorkflow() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 1 : VALID WORKFLOW");
+        System.out.println("==========================================");
+
+        String loginRequest =
+                "{"
+                + "\"username\":\"admin\","
+                + "\"password\":\"admin\""
+                + "}";
+
+        MvcResult result =
+                mockMvc.perform(
+                        post("/task/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(loginRequest)
+                )
+                .andReturn();
+
+        int status =
+                result.getResponse().getStatus();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Status Code : " + status);
+        System.out.println("Response : " + response);
+
+        assertEquals(
+                200,
+                status,
+                "Task Service does not currently implement JWT login"
+        );
+
+        System.out.println("TC-1 PASSED");
+    }
+
+
+    // =========================================================
+    // TEST CASE 2
+    // INVALID JWT
+    //
+    // Expected : 401 Unauthorized
+    // Expected to fail because JWT security is not configured.
+    // =========================================================
+
+    @Test
+    void testInvalidJWT() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 2 : INVALID JWT");
+        System.out.println("==========================================");
+
+        String invalidToken =
+                "invalid-jwt-token";
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/task/displayall")
+                                .header(
+                                        "Authorization",
+                                        "Bearer " + invalidToken
+                                )
+                )
+                .andReturn();
+
+        int status =
+                result.getResponse().getStatus();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Status Code : " + status);
+        System.out.println("Response : " + response);
+
+        assertEquals(
+                401,
+                status,
+                "JWT security is not configured in Task Service"
+        );
+
+        System.out.println("TC-2 PASSED : INVALID JWT -> 401");
+    }
+
+
+    // =========================================================
+    // TEST CASE 3
+    // NO JWT TOKEN
+    //
+    // Expected : 401 Unauthorized
+    // Expected to fail because JWT security is not configured.
+    // =========================================================
+
+    @Test
+    void testNoJWTToken() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 3 : NO JWT TOKEN");
+        System.out.println("==========================================");
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/task/displayall")
+                )
+                .andReturn();
+
+        int status =
+                result.getResponse().getStatus();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Status Code : " + status);
+        System.out.println("Response : " + response);
+
+        assertEquals(
+                401,
+                status,
+                "JWT security is not configured in Task Service"
+        );
+
+        System.out.println("TC-3 PASSED : NO JWT -> 401");
+    }
+
+
+    // =========================================================
+    // TEST CASE 4
+    // LOAD BALANCING CHECK
+    //
+    // Multiple TaskService instances are required.
+    //
+    // Expected to fail because Eureka and LoadBalancer
+    // are not configured.
+    // =========================================================
+
+    @Test
+    void testLoadBalancing() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 4 : LOAD BALANCING CHECK");
+        System.out.println("==========================================");
+
+        for (int i = 1; i <= 10; i++) {
+
+            MvcResult result =
+                    mockMvc.perform(
+                            get("/task/displayall")
+                    )
+                    .andReturn();
+
+            String response =
+                    result.getResponse().getContentAsString();
+
+            System.out.println();
+            System.out.println("Request " + i);
+
+            System.out.println(
+                    "Status : "
+                    + result.getResponse().getStatus()
+            );
+
+            System.out.println("Response : " + response);
+        }
+
+        fail(
+                "Load balancing cannot be verified because "
+                + "Eureka and multiple service instances are not configured"
+        );
+    }
+
+
+    // =========================================================
+    // TEST CASE 5
+    // SERVICE DISCOVERY / INSTANCE FAILURE
+    //
+    // Expected to fail because service discovery is not configured.
+    // =========================================================
+
+    @Test
+    void testServiceDiscoveryFailure() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 5 : SERVICE DISCOVERY FAILURE");
+        System.out.println("==========================================");
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/task/displayall")
+                )
+                .andReturn();
+
+        int status =
+                result.getResponse().getStatus();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Status Code : " + status);
+        System.out.println("Response : " + response);
+
+        fail(
+                "Service discovery failure cannot be tested because "
+                + "Eureka is not configured"
+        );
+    }
+
+
+    // =========================================================
+    // TEST CASE 6
+    // PUBLIC TEST API
+    //
+    // Verify Task Service home endpoint.
+    // =========================================================
+
+    @Test
+    void testPublicTestAPI() throws Exception {
+
+        mockMvc.perform(
+                get("/task/")
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().string("Task Management System"));
+
+        System.out.println("TC-6 PASSED : PUBLIC TASK API");
+    }
+
+
+    // =========================================================
+    // TEST CASE 7
+    // TASK CREATION
+    // =========================================================
+
+    @Test
+    void testTaskCreation() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 7 : TASK CREATION");
+        System.out.println("==========================================");
+
+        String request =
+                getTaskRequest(
+                        "Integration Test Task",
+                        "Testing",
+                        "Pending",
+                        "Vijayawada"
+                );
+
+        MvcResult result =
+                mockMvc.perform(
+                        post("/task/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(request)
+                )
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Response : " + response);
+
+        assertNotNull(response);
+        assertFalse(response.isBlank());
+
+        System.out.println("TC-7 PASSED : TASK CREATED");
+    }
+
+
+    // =========================================================
+    // TEST CASE 8
+    // TASK RETRIEVAL
+    // =========================================================
+
+    @Test
+    void testTaskRetrieval() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 8 : TASK RETRIEVAL");
+        System.out.println("==========================================");
+
+        String request =
+                getTaskRequest(
+                        "Retrieval Test Task",
+                        "Testing",
+                        "Pending",
+                        "Vijayawada"
+                );
+
+        MvcResult createResult =
+                mockMvc.perform(
+                        post("/task/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(request)
+                )
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String response =
+                createResult.getResponse().getContentAsString();
+
+        Long id =
+                objectMapper.readTree(response)
+                        .get("id")
+                        .asLong();
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/task/display/" + id)
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String taskResponse =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Task ID : " + id);
+        System.out.println("Response : " + taskResponse);
+
+        assertTrue(
+                taskResponse.contains("Retrieval Test Task")
+        );
+
+        System.out.println("TC-8 PASSED : TASK RETRIEVED");
+    }
+
+
+    // =========================================================
+    // TEST CASE 9
+    // TASK UPDATE
+    // =========================================================
+
+    @Test
+    void testTaskUpdate() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 9 : TASK UPDATE");
+        System.out.println("==========================================");
+
+        String request =
+                getTaskRequest(
+                        "Update Test Task",
+                        "Testing",
+                        "Pending",
+                        "Vijayawada"
+                );
+
+        MvcResult createResult =
+                mockMvc.perform(
+                        post("/task/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(request)
+                )
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        Long id =
+                objectMapper.readTree(
+                        createResult.getResponse().getContentAsString()
+                ).get("id").asLong();
+
+        String updateRequest =
+                getTaskRequest(
+                        "Updated Task",
+                        "Development",
+                        "Completed",
+                        "Hyderabad"
+                );
+
+        MvcResult result =
+                mockMvc.perform(
+                        put("/task/update/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(updateRequest)
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Response : " + response);
+
+        assertTrue(response.contains("Updated Task"));
+
+        System.out.println("TC-9 PASSED : TASK UPDATED");
+    }
+
+
+    // =========================================================
+    // TEST CASE 10
+    // TASK DELETION
+    // =========================================================
+
+    @Test
+    void testTaskDeletion() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 10 : TASK DELETION");
+        System.out.println("==========================================");
+
+        String request =
+                getTaskRequest(
+                        "Delete Test Task",
+                        "Testing",
+                        "Pending",
+                        "Vijayawada"
+                );
+
+        MvcResult createResult =
+                mockMvc.perform(
+                        post("/task/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(request)
+                )
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        Long id =
+                objectMapper.readTree(
+                        createResult.getResponse().getContentAsString()
+                ).get("id").asLong();
+
+        MvcResult result =
+                mockMvc.perform(
+                        delete("/task/delete/" + id)
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Response : " + response);
+
+        assertEquals(
+                "Task Deleted Successfully",
+                response
+        );
+
+        System.out.println("TC-10 PASSED : TASK DELETED");
+    }
+
+
+    // =========================================================
+    // TEST CASE 11
+    // TASK SEARCH BY NAME
+    // =========================================================
+
+    @Test
+    void testTaskSearchByName() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 11 : TASK SEARCH BY NAME");
+        System.out.println("==========================================");
+
+        String request =
+                getTaskRequest(
+                        "Search Test Task",
+                        "Testing",
+                        "Pending",
+                        "Vijayawada"
+                );
+
+        mockMvc.perform(
+                post("/task/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request)
+        )
+        .andExpect(status().isCreated());
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/task/displaybyname/Search Test Task")
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Response : " + response);
+
+        assertTrue(response.contains("Search Test Task"));
+
+        System.out.println("TC-11 PASSED : SEARCH BY NAME");
+    }
+
+
+    // =========================================================
+    // TEST CASE 12
+    // TASK SEARCH BY TYPE
+    // =========================================================
+
+    @Test
+    void testTaskSearchByType() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 12 : TASK SEARCH BY TYPE");
+        System.out.println("==========================================");
+
+        String request =
+                getTaskRequest(
+                        "Type Search Task",
+                        "Development",
+                        "Pending",
+                        "Vijayawada"
+                );
+
+        mockMvc.perform(
+                post("/task/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request)
+        )
+        .andExpect(status().isCreated());
+
+        MvcResult result =
+                mockMvc.perform(
+                        get("/task/displaybytype/Development")
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Response : " + response);
+
+        assertTrue(response.contains("Type Search Task"));
+
+        System.out.println("TC-12 PASSED : SEARCH BY TYPE");
+    }
+
+
+    // =========================================================
+    // TEST CASE 13
+    // INVALID TASK REQUEST
+    //
+    // Required fields are missing.
+    // Expected : 400 Bad Request
+    // =========================================================
+
+    @Test
+    void testInvalidTaskRequest() throws Exception {
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("TEST CASE 13 : INVALID TASK REQUEST");
+        System.out.println("==========================================");
+
+        String request =
+                "{"
+                + "\"name\":\"\","
+                + "\"type\":\"\","
+                + "\"status\":\"\","
+                + "\"location\":\"\""
+                + "}";
+
+        MvcResult result =
+                mockMvc.perform(
+                        post("/task/add")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(request)
+                )
+                .andReturn();
+
+        int status =
+                result.getResponse().getStatus();
+
+        String response =
+                result.getResponse().getContentAsString();
+
+        System.out.println("Status Code : " + status);
+        System.out.println("Response : " + response);
+
+        assertEquals(400, status);
+
+        System.out.println("TC-13 PASSED : INVALID REQUEST REJECTED");
+    }
+
+}
